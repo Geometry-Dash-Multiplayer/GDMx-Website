@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>GDMX</title>
+    <title>{% block title %}Default Title{% endblock %} | GDMX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 
@@ -47,14 +47,13 @@
                         </a>
                     </li>
                 </ul>
-                {{ partial('_LoginPartial') }}
             </div>
         </div>
     </nav>
 </header>
 <div class="position-absolute top-0 start-0 w-100" style="z-index: -200">
     <div class="w-100 top-0 start-0">
-        {{ partial('Bubbles') }}
+     
     </div>
 </div>
 
@@ -87,7 +86,7 @@ startMoving();
 <script src="{{ url_for('static', filename='lib/jquery/dist/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='lib/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/site.js') }}"></script>
-{% block scripts %}{% endblock %}
+
 <script src="https://cdn.jsdelivr.net/gh/dixonandmoe/rellax@master/rellax.min.js"></script>
 <script>
     // Accepts any class name
