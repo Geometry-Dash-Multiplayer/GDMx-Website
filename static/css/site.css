@@ -1,0 +1,83 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+* {
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.nav-link {
+  color: white;
+}
+
+.nav-link i {
+  /*color: rgb(191, 195, 217);*/
+  color: white;
+}
+
+.bg-blur {
+  backdrop-filter: blur(30px) saturate(100%);
+  background-color: rgba(31, 32, 40, 0.6);
+}
+
+.up {
+  transition: transform 0.3s ease; /* Adding a smooth transition */
+}
+
+.up:hover {
+  transform: translateY(-3px); /* Move the element up by 5px */
+}
+
+.hover-right {
+  transition: transform 0.3s ease;
+}
+
+.hover-right:hover {
+  transform: translateX(5px) scale(1.05);
+}
+
+.element-shadow {
+  position: absolute;
+  top: 10px; /* Adjust the distance from the original element */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(20px); /* Adjust the blur amount */
+  pointer-events: none;
+  z-index: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  --tw-bg-opacity: 1;
+  background-color: #d4d4d8;
+  border-radius: 0.6em;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  height: 0.6em;
+  width: 0.6em;
+}
+
+.btn {
+  transition: all 0.3s ease; /* Adding a smooth transition */
+}

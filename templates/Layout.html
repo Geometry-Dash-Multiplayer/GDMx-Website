@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GDMX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300;10..48,400;10..48,500&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body data-bs-theme="dark">
+<header class="bg-blur">
+    <div class="container-fluid border-bottom d-flex align-items-center justify-content-center py-2">
+        <p class="text-center d-flex flex-row align-items-center mb-0">
+            <span class="me-2">❤️ Welcome back!</span>
+            <span class="px-2 py-1 rounded-3 up d-block" style="background-color: #444554; cursor: pointer">
+                Download GDM
+                <i class="fa-solid ms-2 fa-arrow-right"></i>
+            </span>
+        </p>
+    </div>
+</header>
+<header class="bg-blur sticky-top" style="z-index: 20">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3 py-0">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img class="img-fluid me-1" style="max-height: 40px" src="{{ url_for('static', filename='image/logo.png') }}">
+                <span>GDM-X<span class="px-2 ms-1 py-1 rounded-3 border bg-blur" style="font-size: 0.8em">beta</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link up" href="{{ url_for('index') }}">
+                            <i class="fa-solid fa-house me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link up" href="{{ url_for('index') }}">
+                            <i class="fa-solid fa-list-ul me-2"></i>Patch Notes
+                        </a>
+                    </li>
+                </ul>
+                {{ partial('_LoginPartial') }}
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="position-absolute top-0 start-0 w-100" style="z-index: -200">
+    <div class="w-100 top-0 start-0">
+        {{ partial('Bubbles') }}
+    </div>
+</div>
+
+<script>
+function moveElementRandomly(element) {
+    const maxOffset = 20; // Maximum offset in pixels
+    const randomXOffset = (Math.random() - 0.5) * 2 * maxOffset;
+    const randomYOffset = (Math.random() - 0.5) * 2 * maxOffset;
+
+    element.style.transform = `translate(${randomXOffset}px, ${randomYOffset}px)`;
+}
+
+function startMoving() {
+    const movingElement = document.querySelector('.bubble');
+    moveElementRandomly(movingElement); // Set initial position
+
+    setInterval(() => {
+        moveElementRandomly(movingElement);
+    }, 2000); // Change the interval (in milliseconds) to control the speed of movement
+}
+
+startMoving();
+</script>
+<div class="container">
+    <main role="main" class="pb-3">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+<script src="https://kit.fontawesome.com/3747385463.js" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='lib/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/site.js') }}"></script>
+{% block scripts %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/gh/dixonandmoe/rellax@master/rellax.min.js"></script>
+<script>
+    // Accepts any class name
+    var rellax = new Rellax('.rellax');
+</script>
+</body>
+</html>
