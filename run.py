@@ -8,6 +8,10 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+@app.route('/privacy')
+def privacy():
+    return render_template("Privacy.html")
+
 
 # Run the app if this script is executed directly
 if __name__ == '__main__':
