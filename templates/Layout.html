@@ -1,3 +1,4 @@
+{% from "svg/Bubbles.html" import bubbles with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +54,7 @@
 </header>
 <div class="position-absolute top-0 start-0 w-100" style="z-index: -200">
     <div class="w-100 top-0 start-0">
-     
+        {{ bubbles() }}
     </div>
 </div>
 
