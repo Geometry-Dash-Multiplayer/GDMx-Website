@@ -1,5 +1,5 @@
-import os
-from flask import Flask, render_template, request, redirect, url_for, session
+import os, requests
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from models.users import db, User
 from data.patreon import *
 from flask_oauthlib.client import OAuth
@@ -95,7 +95,34 @@ def update_profile():
 
 @app.route('/connect_patreon')
 def connect_patreon():
-    return patreon.authorize(callback=url_for('patreon_authorized', _external=True))
+    code = request.args.get("code")
+    # Prepare the payload for token exchange
+
+    payload = {
+        "code": code,
+        "grant_type": "authorization_code",
+        "client_id": PATREON_CLIENT_ID,
+        "client_secret": PATREON_CLIENT_SECRET,
+        "redirect_uri": PATREON_REDIRECT_URI
+    }    # Set the headers for the POST request
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    
+    # Make the POST request to exchange code for tokens
+    response = requests.post("https://www.patreon.com/api/oauth2/token", data=payload, headers=headers)
+    
+    if response.status_code == 200:
+        token_data = response.json()
+        access_token = token_data.get("access_token")
+        refresh_token = token_data.get("refresh_token")
+        # You can store the tokens on your server for the user
+        
+        # TODO send user to their profile
+        return jsonify(token_data)  # Return token data as JSON response
+    else:
+        # TODO add error page
+        return "Token exchange failed", response.status_code
 
 
 @app.route('/login/patreon/authorized')
