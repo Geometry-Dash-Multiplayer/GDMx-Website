@@ -9,30 +9,53 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = "b'\xab\x06d\x87\x87\xc2\x0b\x13\x9aB\x9b\x9bW\x98\x91\x88\x0e1\x80\xb3\x02\xd5\x02Z'"
 
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
     db.init_app(app)
     db.create_all()
 
+
 # Define a route to display the index page
 @app.route('/')
 def index():
     return render_template("index.html")
+
+
+@app.context_processor
+def inject_user():
+    user_id = session.get('user_id', None)
+    if user_id:
+        user = User.query.get(user_id)
+        return {"current_user": user}
+    return {"current_user": None}
+
 
 # Define a route to display the privacy page
 @app.route('/privacy')
 def privacy():
     return render_template("Privacy.html")
 
+@app.route('/profile')
+def profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    user = User.query.get(user_id)
+    if not user:
+        return redirect(url_for('login'))
+    return render_template("profile.html", user=user)
+
+
 # Define a route for user login, supporting both GET and POST methods
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
 
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):  # Use the check_password method
             # Store user session data (might want to use Flask-Login for session management later)
@@ -43,6 +66,13 @@ def login():
             return render_template("login.html", error=error)
 
     return render_template("login.html")
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)  # Remove user_id from the session
+    return redirect(url_for('index'))
+
 
 # Define a route for user registration, supporting both GET and POST methods
 @app.route('/register', methods=['GET', 'POST'])
@@ -55,7 +85,7 @@ def register():
 
         if password == confirm_password:
             # Create a new User instance and add it to the database
-            new_user = User(siteUsername=username, email=email)
+            new_user = User(username=username, email=email)
             # Store the hashed password securely using the set_password method
             new_user.set_password(password)
             db.session.add(new_user)
@@ -66,6 +96,7 @@ def register():
             return render_template("register.html", error=error)
 
     return render_template("register.html")
+
 
 # Run the app if this script is executed directly
 if __name__ == '__main__':
