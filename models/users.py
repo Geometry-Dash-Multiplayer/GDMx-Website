@@ -21,7 +21,7 @@ class User(db.Model):
     accountId = db.Column(db.Integer, unique=True, nullable=False)
 
     # Patreon sub Tier
-    tier = db.Column(db.Integer, unique=False, nullable=False)
+    patreon_tier = db.Column(db.Integer, unique=False, nullable=False)
 
     # Settings
     port = db.Column(db.String, unique=False, nullable=False)
@@ -41,7 +41,7 @@ class User(db.Model):
         self.renderCustomIcons = False
         self.playerId = -1
         self.accountId = -1
-        self.tier = 0
+        self.patreon_tier = 0
         self.gameUsername = "NULL"
 
     def set_password(self, password):
