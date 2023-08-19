@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{% block title %}Default Title{% endblock %} | GDMX</title>
+    <title>{% block title %}{{ page_title }}{% endblock %} | GDMX</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
     <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 
@@ -43,7 +44,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link up" href="{{ url_for('index') }}">
+                        <a class="nav-link up" href="{{ url_for('patch_notes') }}">
                             <i class="fa-solid fa-list-ul me-2"></i>Patch Notes
                         </a>
                     </li>

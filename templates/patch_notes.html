@@ -1,0 +1,21 @@
+{% set page_title = "Patch Notes" %}
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-center">Patch Notes</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <a href="{{ url_for('website_updates') }}" class="btn btn-primary">Website Updates</a>
+                    <a href="{{ url_for('gdmx_updates') }}" class="btn btn-primary">GDMx Updates</a>
+                </div>
+                <!-- Add content for patch notes here -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

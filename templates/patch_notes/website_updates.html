@@ -1,0 +1,13 @@
+<!-- website_updates.html -->
+{% set page_title = "Website Updates" %}
+{% extends "Layout.html" %}
+{% block content %}
+<h1 style="color:black">Website Updates</h1>
+
+<div class="row" id="updates-list">
+  <!-- Commits will be inserted here using Flask and Jinja2 templating -->
+  {{ rendered_commits | safe }}
+</div>
+
+<script src="{{ url_for('static', filename='js/fetch_website_updates.js') }}"></script>
+{% endblock %}

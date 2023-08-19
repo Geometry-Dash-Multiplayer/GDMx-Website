@@ -1,11 +1,13 @@
 import os, requests
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+from markupsafe import Markup
 from flask_mail import Mail, Message
 from models.users import db, User
 from data.patreon import *
 from flask_oauthlib.client import OAuth
 from app import app, oauth, db, mail
 import re
+from github import Github
 
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
@@ -282,6 +284,48 @@ def register():
             return render_template("register.html", error=error)
 
     return render_template("register.html")
+
+@app.route('/patch_notes')
+def patch_notes():
+    return render_template("patch_notes.html")
+
+@app.route('/patch_notes/website_updates')
+def website_updates():
+    g = Github("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")
+
+    repo = g.get_repo("R3dWolfie/GDMX-WEBSITE-FLASK")
+    commits = repo.get_commits()
+
+    commit_data = [
+        {
+            "author": commit.commit.author.name,
+            "message": commit.commit.message,
+            "date": commit.commit.author.date.strftime('%Y-%m-%d %H:%M:%S')
+        }
+        for commit in commits
+    ]
+
+    rendered_commits = Markup('\n'.join([
+        f'<div class="col-md-4 mb-4">'
+        f'  <div class="card">'
+        f'    <div class="card-header">'
+        f'      <h5 class="card-title">{commit["author"]}</h5>'
+        f'      <small class="text-muted">{commit["date"]}</small>'
+        f'    </div>'
+        f'    <div class="card-body">'
+        f'      <p class="card-text">{commit["message"]}</p>'
+        f'    </div>'
+        f'  </div>'
+        f'</div>'
+        for commit in commit_data
+    ]))
+
+    return render_template("patch_notes/website_updates.html", rendered_commits=rendered_commits)
+
+
+@app.route('/patch_notes/gdmx_updates')
+def gdmx_updates():
+    return render_template("patch_notes/gdmx_updates.html")
 
 
 # ERROR HANDLING
