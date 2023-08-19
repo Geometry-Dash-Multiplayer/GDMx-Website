@@ -109,10 +109,22 @@ def patreon_authorized():
 
     session['patreon_token'] = (response['access_token'], '')
 
-    # Fetch Patreon user details here
-    # Then, store the user's Patreon tier in the database
+    # Fetch Patreon user details
+    patreon_user = patreon.get('current_user', token=session['patreon_token']).data
+
+    # Extract user's Patreon subscription tier from the response (this might be different based on the actual response format from Patreon)
+    tier = patreon_user.get('tier', 0)
+
+    # Update user's Patreon tier in the database
+    user_id = session.get('user_id')
+    if user_id:
+        user = User.query.get(user_id)
+        if user:
+            user.patreon_tier = tier
+            db.session.commit()
 
     return redirect(url_for('profile'))
+
 
 # Define a route for user login, supporting both GET and POST methods
 @app.route('/login', methods=['GET', 'POST'])
@@ -166,4 +178,7 @@ def register():
 
 # Run the app if this script is executed directly
 if __name__ == '__main__':
+    patreon_user = patreon.get('current_user', token=session['patreon_token']).data
+    print(patreon_user)
+
     app.run(debug=True, host="0.0.0.0")
