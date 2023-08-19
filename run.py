@@ -5,6 +5,7 @@ from models.users import db, User
 from data.patreon import *
 from flask_oauthlib.client import OAuth
 from app import app, oauth, db, mail
+import re
 
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
@@ -45,6 +46,7 @@ def inject_user():
 def privacy():
     return render_template("Privacy.html")
 
+
 @app.route('/profile')
 def profile():
     user_id = session.get('user_id')
@@ -54,8 +56,9 @@ def profile():
     if not user:
         return redirect(url_for('login'))
     return render_template("profile.html", user=user,
-                        client_id = PATREON_CLIENT_ID,
-                        redirect_uri = PATREON_REDIRECT_URI)
+                           client_id=PATREON_CLIENT_ID,
+                           redirect_uri=PATREON_REDIRECT_URI)
+
 
 @app.route('/update_profile', methods=['POST'])
 def update_profile():
@@ -79,6 +82,12 @@ def update_profile():
             flash('Username already exists. Please choose another.', 'error')
             return redirect(url_for('profile'))
 
+    if gd_username and gd_username != user.gdUsername:
+        existing_user_by_gdUsername = User.query.filter_by(gdUsername=gd_username).first()
+        if existing_user_by_gdUsername:
+            flash('GD Username already in use. Please choose another.', 'error')
+            return redirect(url_for('profile'))
+
     # Check if the email already exists in the database
     if email and email != user.email:
         existing_user_by_email = User.query.filter_by(email=email).first()
@@ -100,66 +109,68 @@ def update_profile():
     return redirect(url_for('profile'))
 
 
-
-
 @app.route('/connect_patreon')
 def connect_patreon():
-    code = request.args.get("code")
-    # Prepare the payload for token exchange
+    try:
+        code = request.args.get("code")
+        if not code:
+            raise ValueError("Missing authorization code")
 
-    payload = {
-        "code": code,
-        "grant_type": "authorization_code",
-        "client_id": PATREON_CLIENT_ID,
-        "client_secret": PATREON_CLIENT_SECRET,
-        "redirect_uri": PATREON_REDIRECT_URI
-    }    # Set the headers for the POST request
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
+        payload = {
+            "code": code,
+            "grant_type": "authorization_code",
+            "client_id": PATREON_CLIENT_ID,
+            "client_secret": PATREON_CLIENT_SECRET,
+            "redirect_uri": PATREON_REDIRECT_URI
+        }
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
 
-    # Make the POST request to exchange code for tokens
-    response = requests.post("https://www.patreon.com/api/oauth2/token", data=payload, headers=headers)
+        response = requests.post("https://www.patreon.com/api/oauth2/token", data=payload, headers=headers)
 
-    if response.status_code == 200:
-        token_data = response.json()
-        access_token = token_data.get("access_token")
-        refresh_token = token_data.get("refresh_token")
-        # You can store the tokens on your server for the user
+        if response.status_code == 200:
+            token_data = response.json()
+            access_token = token_data.get("access_token")
+            refresh_token = token_data.get("refresh_token")
+            # You can store the tokens on your server for the user
 
-        # TODO send user to their profile
-        return jsonify(token_data)  # Return token data as JSON response
-    else:
-        # TODO add error page
-        return "Token exchange failed", response.status_code
+            # TODO send user to their profile
+            return jsonify(token_data)  # Return token data as JSON response
+        else:
+            error_message = "Token exchange failed"
+            return render_template('error_pages/error.html', error=error_message), response.status_code
+
+    except Exception as e:
+        error_message = f"Error connecting to Patreon: {str(e)}"
+        return render_template('error_pages/error.html', error=error_message), 500
 
 
 @app.route('/login/patreon/authorized')
 def patreon_authorized():
-    response = patreon.authorized_response()
-    if response is None or response.get('access_token') is None:
-        return "Access denied: reason={} error={}".format(
-            request.args['error_reason'],
-            request.args['error_description']
-        )
+    try:
+        response = patreon.authorized_response()
+        if response is None or response.get('access_token') is None:
+            error_message = "Access denied: authorization failed"
+            return render_template('error_pages/error.html', error=error_message), 403
 
-    session['patreon_token'] = (response['access_token'], '')
+        session['patreon_token'] = (response['access_token'], '')
 
-    # Fetch Patreon user details
-    patreon_user = patreon.get('current_user', token=session['patreon_token']).data
+        patreon_user = patreon.get('current_user', token=session['patreon_token']).data
+        tier = patreon_user.get('tier', 0)
 
-    # Extract user's Patreon subscription tier from the response (this might be different based on the actual response format from Patreon)
-    tier = patreon_user.get('tier', 0)
+        user_id = session.get('user_id')
+        if user_id:
+            user = User.query.get(user_id)
+            if user:
+                user.patreon_tier = tier
+                db.session.commit()
 
-    # Update user's Patreon tier in the database
-    user_id = session.get('user_id')
-    if user_id:
-        user = User.query.get(user_id)
-        if user:
-            user.patreon_tier = tier
-            db.session.commit()
+        return redirect(url_for('profile'))
 
-    return redirect(url_for('profile'))
+    except Exception as e:
+        error_message = f"Error authorizing Patreon: {str(e)}"
+        return render_template('error_pages/error.html', error=error_message), 500
 
 
 # Define a route for user login, supporting both GET and POST methods
@@ -237,6 +248,16 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
+        # Check if the username meets the length requirements
+        if len(username) < 3 or len(username) > 100:
+            error = "Username must be between 3 and 100 characters."
+            return render_template("register.html", error=error)
+
+        # Check if the password meets the requirements
+        if not re.match(r'^(?=.*[A-Z])(?=.*\d).{6,}$', password):
+            error = "Password must be at least 6 characters long and include an uppercase letter and a number."
+            return render_template("register.html", error=error)
+
         existing_user_by_username = User.query.filter_by(username=username).first()
         existing_user_by_email = User.query.filter_by(email=email).first()
 
@@ -262,6 +283,22 @@ def register():
 
     return render_template("register.html")
 
+
+# ERROR HANDLING
+
+@app.errorhandler(404) # Not Found
+def page_not_found(error):
+    return render_template('error_pages/404.html'), 404
+
+
+@app.errorhandler(403) # No permission
+def page_not_found(error):
+    return render_template('error_pages/404.html'), 404
+
+
+@app.errorhandler(500) # Internal Server Error
+def internal_server_error(error):
+    return render_template('error_pages/500.html'), 500
 
 
 # Run the app if this script is executed directly

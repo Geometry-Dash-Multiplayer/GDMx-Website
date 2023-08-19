@@ -47,22 +47,35 @@
                             <i class="fa-solid fa-list-ul me-2"></i>Patch Notes
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link up" href="{{ url_for('privacy') }}">
+                            <i class="fa-solid fa-shield-halved me-2"></i>Privacy
+                        </a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     <ul class="navbar-nav">
                         {% if not current_user %}
                             <li class="nav-item">
-                                <a class="nav-link up" href="{{ url_for('login') }}">Login</a>
+                                <a class="nav-link up" href="{{ url_for('login') }}">
+                                    <i class="fa-solid fa-hand-holding-heart me-2"></i>Login
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link up" href="{{ url_for('register') }}">Register</a>
+                                <a class="nav-link up" href="{{ url_for('register') }}">
+                                    <i class="fa-solid fa-pen me-2"></i>Register
+                                </a>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link up" href="{{ url_for('profile') }}">Profile</a>
+                                <a class="nav-link up" href="{{ url_for('profile') }}">
+                                    <i class="fa-solid fa-user me-2"></i>Profile
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link up" href="{{ url_for('logout') }}">Logout</a>
+                                <a class="nav-link up" href="{{ url_for('logout') }}">
+                                    <i class="fa-solid fa-door-open me-2"></i>Logout
+                                </a>
                             </li>
                         {% endif %}
                     </ul>

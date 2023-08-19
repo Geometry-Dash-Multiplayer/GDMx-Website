@@ -16,15 +16,15 @@ class User(db.Model):
                           server_default=func.now())
 
     # Robtop IDs
-    playerId = db.Column(db.Integer, unique=True, nullable=False)
-    accountId = db.Column(db.Integer, unique=True, nullable=False)
+    playerId = db.Column(db.Integer, unique=True, nullable=True)
+    accountId = db.Column(db.Integer, unique=True, nullable=True)
 
     # Patreon sub Tier
     patreon_tier = db.Column(db.Integer, unique=False, nullable=False)
 
     # Settings
     port = db.Column(db.String, unique=False, nullable=False)
-    serverIp = db.Column(db.String, unique=True, nullable=False)
+    serverIp = db.Column(db.String, unique=False, nullable=False)
     renderCustomIcons = db.Column(db.Boolean, unique=False, nullable=False)
 
     def __init__(self, username, email):
@@ -36,8 +36,8 @@ class User(db.Model):
         self.port = "7777"
         self.serverIp = "176.106.224.146"
         self.renderCustomIcons = False
-        self.playerId = -1
-        self.accountId = -1
+        self.playerId = None
+        self.accountId = None
         self.patreon_tier = 0
         self.gameUsername = ""
 
