@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from models.users import db, User
+from flask_oauthlib.client import OAuth
 
 # Create an instance of the Flask class
 app = Flask(__name__)
@@ -10,6 +11,23 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "b'\xab\x06d\x87\x87\xc2\x0b\x13\x9aB\x9b\x9bW\x98\x91\x88\x0e1\x80\xb3\x02\xd5\x02Z'"
+
+
+oauth = OAuth(app)
+
+patreon = oauth.remote_app(
+    'patreon',
+    consumer_key='tWe8WLdrzldJNM1W2wwQO47x6w3V-jXKWHxqoKpAEQYkstEXQHJndxUN01qvSw2n',
+    consumer_secret='nddXb3R832dFtzEo62RBwRX6BIXK86NpeE5dXGrbbTAsUPCEvZYy5A3E8yz8BKSa',
+    request_token_params={
+        'scope': 'users pledges-to-me my-campaign',  # Adjust scopes as needed
+    },
+    base_url='https://www.patreon.com/api/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://www.patreon.com/api/oauth2/token',
+    authorize_url='https://www.patreon.com/oauth2/authorize',
+)
 
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
@@ -47,6 +65,51 @@ def profile():
         return redirect(url_for('login'))
     return render_template("profile.html", user=user)
 
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+
+    user = User.query.get(user_id)
+    if not user:
+        return redirect(url_for('login'))
+
+    gd_username = request.form.get('gd_username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    if gd_username:
+        user.gameUsername = gd_username
+    if email:
+        user.email = email
+    if password:
+        user.set_password(password)
+
+    db.session.commit()
+    return redirect(url_for('profile'))
+
+
+@app.route('/connect_patreon')
+def connect_patreon():
+    return patreon.authorize(callback=url_for('patreon_authorized', _external=True))
+
+
+@app.route('/login/patreon/authorized')
+def patreon_authorized():
+    response = patreon.authorized_response()
+    if response is None or response.get('access_token') is None:
+        return "Access denied: reason={} error={}".format(
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+
+    session['patreon_token'] = (response['access_token'], '')
+
+    # Fetch Patreon user details here
+    # Then, store the user's Patreon tier in the database
+
+    return redirect(url_for('profile'))
 
 # Define a route for user login, supporting both GET and POST methods
 @app.route('/login', methods=['GET', 'POST'])

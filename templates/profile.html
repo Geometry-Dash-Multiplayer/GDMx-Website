@@ -1,4 +1,38 @@
 {% extends "Layout.html" %}
 {% block content %}
 
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Profile Settings</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('update_profile') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="gd-username" class="form-label">GD Username</label>
+                            <input type="text" class="form-control" id="gd-username" name="gd_username" value="{{ user.gameUsername }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">New Password (leave blank if you don't want to change)</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                        {% if not current_user.patreon_tier %}  <!-- Assuming you've added a patreon_tier attribute to your User model -->
+                            <a href="{{ url_for('connect_patreon') }}" class="btn btn-secondary">Connect with Patreon</a>
+                            {% else %}
+                            <p>Your Patreon Tier: {{ current_user.patreon_tier }}</p>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
