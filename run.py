@@ -1,3 +1,4 @@
+import json
 import os, requests
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from markupsafe import Markup
@@ -12,6 +13,23 @@ from github import Github
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
     db.create_all()
+
+with open('emojis.json', 'r', encoding='utf-8') as file:
+    emoji_data = json.load(file)
+
+EMOJI_MAP = {}
+for category, emojis in emoji_data.items():
+    for emoji_info in emojis:
+        key = emoji_info["description"].lower().replace(" ", "_")
+        EMOJI_MAP[key] = emoji_info["emoji"]
+
+
+def replace_emojis(text):
+    for emoji_name, emoji_code in EMOJI_MAP.items():
+        if f":{emoji_name}:" in text:
+            print(f"Replacing :{emoji_name}: with {emoji_code}")
+        text = re.sub(f":{emoji_name}:", emoji_code, text)
+    return text
 
 patreon = oauth.remote_app(
     'patreon',
@@ -299,7 +317,7 @@ def website_updates():
     commit_data = [
         {
             "author": commit.commit.author.name,
-            "message": commit.commit.message,
+            "message": replace_emojis(commit.commit.message),
             "date": commit.commit.author.date.strftime('%Y-%m-%d %H:%M:%S')
         }
         for commit in commits
