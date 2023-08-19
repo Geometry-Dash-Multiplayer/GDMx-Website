@@ -11,12 +11,16 @@
                 <div class="card-body">
                     <form action="{{ url_for('update_profile') }}" method="POST">
                         <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+                        </div>
+                        <div class="mb-3">
                             <label for="gd-username" class="form-label">GD Username</label>
-                            <input type="text" class="form-control" id="gd-username" name="gd_username" value="{{ user.gameUsername }}" required>
+                            <input type="text" class="form-control" id="gd-username" name="gd_username" value="{{ user.gameUsername }}">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">New Password (leave blank if you don't want to change)</label>

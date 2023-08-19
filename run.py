@@ -67,10 +67,27 @@ def update_profile():
     if not user:
         return redirect(url_for('login'))
 
+    new_username = request.form.get('username')
     gd_username = request.form.get('gd_username')
     email = request.form.get('email')
     password = request.form.get('password')
 
+    # Check if the new_username already exists in the database
+    if new_username and new_username != user.username:
+        existing_user_by_username = User.query.filter_by(username=new_username).first()
+        if existing_user_by_username:
+            flash('Username already exists. Please choose another.', 'error')
+            return redirect(url_for('profile'))
+
+    # Check if the email already exists in the database
+    if email and email != user.email:
+        existing_user_by_email = User.query.filter_by(email=email).first()
+        if existing_user_by_email:
+            flash('Email already registered. Please use another.', 'error')
+            return redirect(url_for('profile'))
+
+    if new_username:
+        user.username = new_username
     if gd_username:
         user.gameUsername = gd_username
     if email:
@@ -79,7 +96,10 @@ def update_profile():
         user.set_password(password)
 
     db.session.commit()
+    flash('Profile updated successfully!', 'success')
     return redirect(url_for('profile'))
+
+
 
 
 @app.route('/connect_patreon')
