@@ -23,7 +23,7 @@
                             <input type="password" class="form-control" id="password" name="password">
                         </div>
                         {% if not current_user.patreon_tier %}  <!-- Assuming you've added a patreon_tier attribute to your User model -->
-                            <a href="{{ url_for('connect_patreon') }}" class="btn btn-secondary">Connect with Patreon</a>
+                            <a href="https://www.patreon.com/oauth2/authorize?response_type=code&client_id={{ client_id }}&redirect_uri={{ redirect_uri  }}" class="btn btn-secondary">Connect with Patreon</a>
                             {% else %}
                             <p>Your Patreon Tier: {{ current_user.patreon_tier }}</p>
                         {% endif %}

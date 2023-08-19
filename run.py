@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from models.users import db, User
+from data.patreon import *
 from flask_oauthlib.client import OAuth
 
 # Create an instance of the Flask class
@@ -63,7 +64,9 @@ def profile():
     user = User.query.get(user_id)
     if not user:
         return redirect(url_for('login'))
-    return render_template("profile.html", user=user)
+    return render_template("profile.html", user=user,
+                        client_id = PATREON_CLIENT_ID, 
+                        redirect_uri = PATREON_REDIRECT_URI)
 
 @app.route('/update_profile', methods=['POST'])
 def update_profile():
