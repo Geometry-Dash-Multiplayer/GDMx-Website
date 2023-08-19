@@ -1,9 +1,8 @@
 from flask_bcrypt import Bcrypt
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-bcrypt = Bcrypt()
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from app import db, app, bcrypt
 
 
 class User(db.Model):
@@ -28,11 +27,9 @@ class User(db.Model):
     serverIp = db.Column(db.String, unique=True, nullable=False)
     renderCustomIcons = db.Column(db.Boolean, unique=False, nullable=False)
 
-    def __init__(self,username, email):
-
+    def __init__(self, username, email):
         self.username = username
         self.email = email
-
 
         # Defaults
 
@@ -42,13 +39,26 @@ class User(db.Model):
         self.playerId = -1
         self.accountId = -1
         self.patreon_tier = 0
-        self.gameUsername = "NULL"
+        self.gameUsername = ""
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
+
+    def generate_reset_token(self, expires_sec=900):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f"<User {self.siteUsername}>"

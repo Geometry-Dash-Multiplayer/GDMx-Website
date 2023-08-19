@@ -8,6 +8,9 @@
                 <h4 class="text-center">Register a New Account</h4>
             </div>
             <div class="card-body">
+                {% if error %}  <!-- Display the error if it exists -->
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
                 <form method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>

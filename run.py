@@ -1,20 +1,14 @@
 import os, requests
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+from flask_mail import Mail, Message
 from models.users import db, User
 from data.patreon import *
 from flask_oauthlib.client import OAuth
+from app import app, oauth, db, mail
 
-# Create an instance of the Flask class
-app = Flask(__name__)
-
-# Configuration for SQLAlchemy and database
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'users.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = "b'\xab\x06d\x87\x87\xc2\x0b\x13\x9aB\x9b\x9bW\x98\x91\x88\x0e1\x80\xb3\x02\xd5\x02Z'"
-
-
-oauth = OAuth(app)
+# Initialize SQLAlchemy with the app context and create tables
+with app.app_context():
+    db.create_all()
 
 patreon = oauth.remote_app(
     'patreon',
@@ -29,11 +23,6 @@ patreon = oauth.remote_app(
     access_token_url='https://www.patreon.com/api/oauth2/token',
     authorize_url='https://www.patreon.com/oauth2/authorize',
 )
-
-# Initialize SQLAlchemy with the app context and create tables
-with app.app_context():
-    db.init_app(app)
-    db.create_all()
 
 
 # Define a route to display the index page
@@ -65,7 +54,7 @@ def profile():
     if not user:
         return redirect(url_for('login'))
     return render_template("profile.html", user=user,
-                        client_id = PATREON_CLIENT_ID, 
+                        client_id = PATREON_CLIENT_ID,
                         redirect_uri = PATREON_REDIRECT_URI)
 
 @app.route('/update_profile', methods=['POST'])
@@ -108,16 +97,16 @@ def connect_patreon():
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
-    
+
     # Make the POST request to exchange code for tokens
     response = requests.post("https://www.patreon.com/api/oauth2/token", data=payload, headers=headers)
-    
+
     if response.status_code == 200:
         token_data = response.json()
         access_token = token_data.get("access_token")
         refresh_token = token_data.get("refresh_token")
         # You can store the tokens on your server for the user
-        
+
         # TODO send user to their profile
         return jsonify(token_data)  # Return token data as JSON response
     else:
@@ -173,6 +162,46 @@ def login():
     return render_template("login.html")
 
 
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = User.query.filter_by(email=email).first()
+        if user:
+            # Generate and send the password reset email
+            token = user.generate_reset_token()
+            reset_link = url_for('reset_password', token=token, _external=True)
+
+            subject = 'Password Reset Request'
+            body = f"""
+            To reset your password, visit the following link: {reset_link}
+            If you did not make this request then simply ignore this email and no changes will be made.
+            """
+            msg = Message(subject, recipients=[user.email], body=body)
+            mail.send(msg)
+
+            flash('An email with instructions to reset your password has been sent.', 'info')
+            return redirect(url_for('login'))
+        else:
+            flash('That email does not exist.', 'warning')
+    return render_template('forgot_password.html')
+
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    user = User.verify_reset_token(token)
+    if not user:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('forgot_password'))
+    if request.method == 'POST':
+        password = request.form['password']
+        user.set_password(password)
+        db.session.commit()
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', token=token)
+
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)  # Remove user_id from the session
@@ -187,6 +216,17 @@ def register():
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
+
+        existing_user_by_username = User.query.filter_by(username=username).first()
+        existing_user_by_email = User.query.filter_by(email=email).first()
+
+        if existing_user_by_username:
+            error = "Username already exists. Please choose another."
+            return render_template("register.html", error=error)
+
+        if existing_user_by_email:
+            error = "Email already registered. Please use another or login."
+            return render_template("register.html", error=error)
 
         if password == confirm_password:
             # Create a new User instance and add it to the database
@@ -203,9 +243,7 @@ def register():
     return render_template("register.html")
 
 
+
 # Run the app if this script is executed directly
 if __name__ == '__main__':
-    patreon_user = patreon.get('current_user', token=session['patreon_token']).data
-    print(patreon_user)
-
     app.run(debug=True, host="0.0.0.0")
