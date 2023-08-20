@@ -270,7 +270,7 @@ def patch_notes():
 
 @app.route('/patchNotes/websiteUpdates')
 def website_updates():
-    g = Github("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")
+    g = Github("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")
 
     repo = g.get_repo("Geometry-Dash-Multiplayer/GDMx-Website")
     commits = repo.get_commits()
