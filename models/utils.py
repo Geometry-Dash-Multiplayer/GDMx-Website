@@ -25,4 +25,7 @@ patreon = oauth.remote_app(
 )
 
 
+PATREON_CLIENT_ID = "tWe8WLdrzldJNM1W2wwQO47x6w3V-jXKWHxqoKpAEQYkstEXQHJndxUN01qvSw2n"
+PATREON_CLIENT_SECRET = "nddXb3R832dFtzEo62RBwRX6BIXK86NpeE5dXGrbbTAsUPCEvZYy5A3E8yz8BKSa"
+PATREON_REDIRECT_URI = "http://127.0.0.1:5000/connect_patreon"
 # Define a route to display the index page

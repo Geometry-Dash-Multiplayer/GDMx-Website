@@ -2,6 +2,7 @@ from models.app import app, db
 import json
 import routes
 
+
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
     db.create_all()
