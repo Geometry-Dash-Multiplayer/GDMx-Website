@@ -4,15 +4,14 @@ from markupsafe import Markup
 from flask_mail import Message
 from models.users import User
 from data.patreon import *
-from models.extensions import app, db, mail
-from utils import replace_emojis, patreon
+from extensions import app, db, mail
+from models.utils import replace_emojis, patreon
 import re
 from github import Github
 
 @app.route('/')
 def index():
     return render_template("index.html")
-
 
 @app.context_processor
 def inject_user():
@@ -265,13 +264,13 @@ def register():
 
     return render_template("register.html")
 
-@app.route('/patch_notes')
+@app.route('/patchNotes')
 def patch_notes():
     return render_template("patch_notes.html")
 
-@app.route('/patch_notes/website_updates')
+@app.route('/patchNotes/websiteUpdates')
 def website_updates():
-    g = Github("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")
+    g = Github("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")
 
     repo = g.get_repo("Geometry-Dash-Multiplayer/GDMx-Website")
     commits = repo.get_commits()
@@ -287,13 +286,13 @@ def website_updates():
 
     rendered_commits = Markup('\n'.join([
         f'<div class="col-md-4 mb-4">'
-        f'  <div class="card">'
+        f'  <div class="card commit-card">'
         f'    <div class="card-header">'
-        f'      <h5 class="card-title">{commit["author"]}</h5>'
-        f'      <small class="text-muted">{commit["date"]}</small>'
+        f'      <div class="commit-author">{commit["author"]}</div>'
+        f'      <div class="commit-date">{commit["date"]}</div>'
         f'    </div>'
         f'    <div class="card-body">'
-        f'      <p class="card-text">{commit["message"]}</p>'
+        f'      <div class="commit-message">{commit["message"]}</div>'
         f'    </div>'
         f'  </div>'
         f'</div>'
@@ -303,10 +302,25 @@ def website_updates():
     return render_template("patch_notes/website_updates.html", rendered_commits=rendered_commits)
 
 
-@app.route('/patch_notes/gdmx_updates')
+@app.route('/patchNotes/gdmxUpdates')
 def gdmx_updates():
     return render_template("patch_notes/gdmx_updates.html")
 
+@app.route('/contactUs', methods=['GET', 'POST'])
+def contact_us():
+    if request.method == 'POST':
+        subject = request.form['subject']
+        message = request.form['message']
+        email = request.form['email']
 
-# ERROR HANDLING
+        # Create and send the email message
+        msg = Message(subject, recipients=['gdmultiplayerx.raa@gmail.com'], body=f"New Contact us message has arrived.\n\n"
+                                                                                 f"From: {email}\n"
+                                                                                 f"Message: \n{message}")
+        mail.send(msg)
+
+        flash('Your message has been sent. Thank you!', 'success')
+        return redirect(url_for('index'))
+
+    return render_template('contactUs.html')
 

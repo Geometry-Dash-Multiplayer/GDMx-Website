@@ -1,6 +1,6 @@
 from sqlalchemy.sql import func
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from models.extensions import db, bcrypt
+from extensions import db, bcrypt
 from models.app import app
 
 

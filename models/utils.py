@@ -1,5 +1,5 @@
 import re
-from models.extensions import oauth
+from extensions import oauth
 from run import EMOJI_MAP
 
 

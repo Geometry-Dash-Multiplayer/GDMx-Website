@@ -1,5 +1,6 @@
 from models.app import app, db
 import json
+import routes
 
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
@@ -15,5 +16,6 @@ for category, emojis in emoji_data.items():
         EMOJI_MAP[key] = emoji_info["emoji"]
 
 if __name__ == '__main__':
+    print(app.template_folder)
     app.run(debug=True)
 

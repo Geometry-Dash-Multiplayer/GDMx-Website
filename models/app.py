@@ -1,4 +1,4 @@
-from models.extensions import app, db, bcrypt, mail, oauth
+from extensions import app, db, bcrypt, mail, oauth
 from models.config import Configuration
 
 app.config.from_object(Configuration)
