@@ -2,7 +2,8 @@ from flask_bcrypt import Bcrypt
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from app import db, app, bcrypt
+from extensions import db, bcrypt
+from app import app
 
 
 class User(db.Model):
