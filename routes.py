@@ -324,3 +324,7 @@ def contact_us():
 
     return render_template('contactUs.html')
 
+@app.route('/downloads')
+def downloads():
+    return render_template('downloads.html')
+

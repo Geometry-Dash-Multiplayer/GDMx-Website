@@ -1,0 +1,31 @@
+{% set page_title = "Download" %}
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid h-100">
+    <div class="row h-100 align-items-center justify-content-center">
+        <div class="col-12 text-center mb-5">
+            <img src="{{ url_for('static', filename='image/logo.png') }}" alt="GDMx Logo" class="img-fluid mb-4" style="max-height: 150px;">
+            <h1 class="display-4">{{ page_title }}</h1>
+        </div>
+        <div class="col-md-5 col-lg-4 mb-4 hover-right">
+            <div class="card bg-blur commit-card"> <!-- Added commit-card class for shadow and hover effects -->
+                <div class="card-body text-center">
+                    <h3 class="card-title">GDMx</h3>
+                    <p>The ultimate Geometry Dash Multiplayer experience.</p>
+                    <a href="#" class="btn btn-primary btn-lg btn-block">Download GDMx</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-4 mb-4 hover-right">
+            <div class="card bg-blur commit-card"> <!-- Added commit-card class for shadow and hover effects -->
+                <div class="card-body text-center">
+                    <h3 class="card-title">GDMAx</h3>
+                    <p>Experience Geometry Dash in a whole new augmented reality dimension.</p>
+                    <a href="#" class="btn btn-primary btn-lg btn-block">Download GDMAx</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

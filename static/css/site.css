@@ -112,3 +112,15 @@ html, body {
     font-size: 0.9em;
     line-height: 1.4;
 }
+.download-btn {
+    text-decoration: none;
+    color: inherit; /* or set to any desired color */
+}
+
+.download-btn:hover,
+.download-btn:focus {
+    text-decoration: none;
+    color: inherit; /* or set to any desired hover/focus color */
+}
+
+
