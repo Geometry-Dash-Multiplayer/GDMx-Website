@@ -306,8 +306,8 @@ def register():
 def patch_notes():
     return render_template("patch_notes.html")
 
-@app.route('/patch_notes/website_updates')
-def website_updates():
+@app.route('/patch_notes/websiteUpdates')
+def websiteUpdates():
     g = Github("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")
 
     repo = g.get_repo("Geometry-Dash-Multiplayer/GDMx-Website")
@@ -337,12 +337,12 @@ def website_updates():
         for commit in commit_data
     ]))
 
-    return render_template("patch_notes/website_updates.html", rendered_commits=rendered_commits)
+    return render_template("patch_notes/websiteUpdates.html", rendered_commits=rendered_commits)
 
 
-@app.route('/patch_notes/gdmx_updates')
-def gdmx_updates():
-    return render_template("patch_notes/gdmx_updates.html")
+@app.route('/patch_notes/gdmxUpdates')
+def gdmxUpdates():
+    return render_template("patch_notes/gdmxUpdates.html")
 
 
 # ERROR HANDLING

@@ -269,11 +269,12 @@ def patch_notes():
     return render_template("patch_notes.html")
 
 @app.route('/patchNotes/websiteUpdates')
-def website_updates():
-    g = Github("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")
+def websiteUpdates():
+    g = Github("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")
 
     repo = g.get_repo("Geometry-Dash-Multiplayer/GDMx-Website")
     commits = repo.get_commits()
+    print("fetching commits")
 
     commit_data = [
         {
@@ -299,12 +300,12 @@ def website_updates():
         for commit in commit_data
     ]))
 
-    return render_template("patch_notes/website_updates.html", rendered_commits=rendered_commits)
+    return render_template("patch_notes/websiteUpdates.html", rendered_commits=rendered_commits)
 
 
 @app.route('/patchNotes/gdmxUpdates')
-def gdmx_updates():
-    return render_template("patch_notes/gdmx_updates.html")
+def gdmxUpdates():
+    return render_template("patch_notes/gdmxUpdates.html")
 
 @app.route('/contactUs', methods=['GET', 'POST'])
 def contact_us():

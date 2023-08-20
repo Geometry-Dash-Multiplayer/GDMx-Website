@@ -1,6 +1,6 @@
 // static/js/fetch_website_updates.js
 function fetchAndDisplayUpdates() {
-  fetch('/patch_notes/website_updates')
+  fetch('/patch_notes/websiteUpdates')
     .then(response => response.json())
     .then(data => {
       const updatesList = document.getElementById('updates-list');
