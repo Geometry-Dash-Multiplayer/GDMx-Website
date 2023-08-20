@@ -1,12 +1,11 @@
 import json
-import os, requests
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+import requests
+from flask import render_template, request, redirect, url_for, session, jsonify, flash
 from markupsafe import Markup
-from flask_mail import Mail, Message
-from models.users import db, User
+from flask_mail import Message
+from models.users import User
 from data.patreon import *
-from flask_oauthlib.client import OAuth
-from app import app, oauth, db, mail
+from models.app import app, oauth, db, mail
 import re
 from github import Github
 
@@ -14,7 +13,7 @@ from github import Github
 with app.app_context():
     db.create_all()
 
-with open('../emojis.json', 'r', encoding='utf-8') as file:
+with open('../data/emojis.json', 'r', encoding='utf-8') as file:
     emoji_data = json.load(file)
 
 EMOJI_MAP = {}

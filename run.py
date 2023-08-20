@@ -1,12 +1,11 @@
-from app import app, db
+from models.app import app, db
 import json
-import routes
 
 # Initialize SQLAlchemy with the app context and create tables
 with app.app_context():
     db.create_all()
 
-with open('emojis.json', 'r', encoding='utf-8') as file:
+with open('data/emojis.json', 'r', encoding='utf-8') as file:
     emoji_data = json.load(file)
 
 EMOJI_MAP = {}

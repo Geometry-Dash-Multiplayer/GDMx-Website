@@ -1,8 +1,5 @@
 import re
-import json
-from flask_oauthlib.client import OAuth
-from app import app
-from extensions import oauth
+from models.extensions import oauth
 from run import EMOJI_MAP
 
 

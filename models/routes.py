@@ -1,13 +1,10 @@
-import json
-import os
 import requests
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+from flask import render_template, request, redirect, url_for, session, jsonify, flash
 from markupsafe import Markup
-from flask_mail import Mail, Message
+from flask_mail import Message
 from models.users import User
 from data.patreon import *
-from flask_oauthlib.client import OAuth
-from extensions import app, db, mail, oauth
+from models.extensions import app, db, mail
 from utils import replace_emojis, patreon
 import re
 from github import Github
