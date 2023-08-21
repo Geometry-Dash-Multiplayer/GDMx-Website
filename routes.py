@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for, session, jsonify,
 from markupsafe import Markup
 from flask_mail import Message
 from models.users import User
-from data.patreon import *
+from models.patreon import *
 from extensions import app, db, mail
 from models.utils import replace_emojis, patreon
 import re

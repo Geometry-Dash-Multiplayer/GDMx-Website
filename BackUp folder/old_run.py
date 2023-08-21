@@ -4,7 +4,7 @@ from flask import render_template, request, redirect, url_for, session, jsonify,
 from markupsafe import Markup
 from flask_mail import Message
 from models.users import User
-from data.patreon import *
+from models.patreon import *
 from models.app import app, oauth, db, mail
 import re
 from github import Github
