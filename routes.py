@@ -159,6 +159,7 @@ def patreon_authorized():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        # user login
         username = request.form['username']
         password = request.form['password']
 
