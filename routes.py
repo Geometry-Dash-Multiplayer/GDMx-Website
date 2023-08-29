@@ -127,9 +127,8 @@ def connect_patreon():
 
             user = User.query.get(session['user_id'])
             user.patreon_email = user_data["data"]["attributes"]["email"]
-
-
             patreon_supporters = get_latest_supporters(access_token)
+
             # check if they're a supporter
             for i in patreon_supporters["data"]:
                 if i["attributes"]["email"] == user.patreon_email:
@@ -144,8 +143,7 @@ def connect_patreon():
 
             db.session.commit()
 
-            # TODO send user to their profile
-            return jsonify(patreon_supporters)  # Return token data as JSON response
+            return redirect("/profile")
         else:
             error_message = "Token exchange failed"
             return render_template('error_pages/error.html', error=error_message), response.status_code
