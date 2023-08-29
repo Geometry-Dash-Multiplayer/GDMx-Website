@@ -7,8 +7,8 @@ from models.patreon import *
 from extensions import app, db, mail
 from models.utils import replace_emojis, patreon
 import re
-from github import Github
 
+from github import Github
 
 @app.route('/')
 def index():
@@ -115,10 +115,37 @@ def connect_patreon():
             token_data = response.json()
             access_token = token_data.get("access_token")
             refresh_token = token_data.get("refresh_token")
-            # You can store the tokens on your server for the user
+
+            # get the user profile information
+            response = requests.get(f"https://www.patreon.com/api/oauth2/v2/identity?fields%5Bcampaign%5D=summary,is_monthly&fields%5Buser%5D=full_name,email", data={
+
+            }, headers={
+                "Authorization": f"Bearer {access_token}"
+            })
+
+            user_data = response.json()
+
+            user = User.query.get(session['user_id'])
+            user.patreon_email = user_data["data"]["attributes"]["email"]
+
+
+            patreon_supporters = get_latest_supporters(access_token)
+            # check if they're a supporter
+            for i in patreon_supporters["data"]:
+                if i["attributes"]["email"] == user.patreon_email:
+                    # get tier
+                    for g in patreon_supporters["included"]:
+                        for tier in i["relationships"]["currently_entitled_tiers"]["data"]:
+                            if tier["type"] == "tier" and tier["id"] == g["id"]:
+                                tier_id = tier["id"]
+                                user.patreon_tier = g["attributes"]["title"]
+
+                    break
+
+            db.session.commit()
 
             # TODO send user to their profile
-            return jsonify(token_data)  # Return token data as JSON response
+            return jsonify(patreon_supporters)  # Return token data as JSON response
         else:
             error_message = "Token exchange failed"
             return render_template('error_pages/error.html', error=error_message), response.status_code

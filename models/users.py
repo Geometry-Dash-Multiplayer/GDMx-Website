@@ -10,6 +10,9 @@ class User(db.Model):
     username = db.Column(db.String(512), unique=True, nullable=False)
     password_hash = db.Column(db.String(512), nullable=False)  # Rename to password_hash
     gameUsername = db.Column(db.String(512), unique=False, nullable=False)
+
+    # patreon id of the user stored in the db after they oauth
+    patreon_email = db.Column(db.String(512), unique=False, nullable=True)
     email = db.Column(db.String(512), unique=True, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True),
                           server_default=func.now())
