@@ -3,9 +3,9 @@
   <component name="Black">
     <option name="executionMode" value="BINARY" />
     <option name="pathToExecutable" value="C:\Users\flandre-real\AppData\Local\Programs\Python\Python310\Scripts\black.exe" />
-    <option name="sdkUUID" value="b4716cbe-7a93-4f03-856c-00979a8f987e" />
+    <option name="sdkName" value="Python 3.11 (GDMX-WEBSITE)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (GDMX-WEBSITE-FLASK)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (GDMX-WEBSITE)" project-jdk-type="Python SDK" />
   <component name="PyCharmProfessionalAdvertiser">
     <option name="shown" value="true" />
   </component>

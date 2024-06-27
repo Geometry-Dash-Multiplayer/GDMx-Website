@@ -19,9 +19,6 @@ html {
 
 body {
   margin-bottom: 60px;
-}
-
-* {
   font-family: 'Bricolage Grotesque', sans-serif;
 }
 
@@ -30,7 +27,6 @@ body {
 }
 
 .nav-link i {
-  /*color: rgb(191, 195, 217);*/
   color: white;
 }
 
@@ -39,12 +35,34 @@ body {
   background-color: rgba(31, 32, 40, 0.6);
 }
 
+.pricing-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.pricing-title {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.pricing-price {
+  font-size: 1.2em;
+  color: #666;
+}
+
 .up {
-  transition: transform 0.3s ease; /* Adding a smooth transition */
+  transition: transform 0.3s ease;
 }
 
 .up:hover {
-  transform: translateY(-3px); /* Move the element up by 5px */
+  transform: translateY(-3px);
 }
 
 .hover-right {
@@ -57,17 +75,16 @@ body {
 
 .element-shadow {
   position: absolute;
-  top: 10px; /* Adjust the distance from the original element */
+  top: 10px;
   left: 0;
   right: 0;
   bottom: 0;
-  filter: blur(20px); /* Adjust the blur amount */
+  filter: blur(20px);
   pointer-events: none;
   z-index: 0;
 }
 
 ::-webkit-scrollbar-thumb {
-  --tw-bg-opacity: 1;
   background-color: #d4d4d8;
   border-radius: 0.6em;
 }
@@ -79,51 +96,53 @@ body {
 }
 
 .btn {
-  transition: all 0.3s ease; /* Adding a smooth transition */
+  transition: all 0.3s ease;
 }
+
 html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
+
 .commit-card {
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 
 .commit-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .commit-author {
-    font-weight: bold;
-    margin-bottom: 8px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 .commit-date {
-    font-size: 0.8em;
-    color: #777;
-    margin-bottom: 12px;
+  font-size: 0.8em;
+  color: #777;
+  margin-bottom: 12px;
 }
 
 .commit-message {
-    font-size: 0.9em;
-    line-height: 1.4;
+  font-size: 0.9em;
+  line-height: 1.4;
 }
+
 .download-btn {
-    text-decoration: none;
-    color: inherit; /* or set to any desired color */
+  text-decoration: none;
+  color: inherit;
 }
 
 .download-btn:hover,
 .download-btn:focus {
-    text-decoration: none;
-    color: inherit; /* or set to any desired hover/focus color */
+  text-decoration: none;
+  color: inherit;
 }
 
-
 .mtk14 {
-color: #f43f5ecc
+  color: #f43f5ecc;
 }
