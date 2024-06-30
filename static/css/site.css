@@ -171,3 +171,50 @@ html, body {
   height: 100%;
   z-index: -1;
 }
+.hero-section {
+  position: relative;
+  color: white;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('path_to_background_image') no-repeat center center;
+  background-size: cover;
+}
+
+.hero-section h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.hero-section p {
+  font-size: 1.2em;
+}
+
+.pricing-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 20px;
+}
+
+.pricing-card h3 {
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.pricing-card p {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.pricing-card ul {
+  list-style-type: none;
+  padding: 0;
+  font-size: 1.2em;
+}
+
+.pricing-card a {
+  font-size: 1.2em;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}

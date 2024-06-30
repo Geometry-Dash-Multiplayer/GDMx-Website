@@ -66,18 +66,13 @@
       this.dx = dx;
       this.dy = dy;
       this.radius = radius;
-      this.colorStart = getRandomPastelColor();
-      this.colorEnd = getRandomPastelColor();
+      this.color = getRandomPastelColor();
     }
 
     draw() {
-      const gradient = ctx.createRadialGradient(this.x, this.y, this.radius * 0.3, this.x, this.y, this.radius);
-      gradient.addColorStop(0, this.colorStart);
-      gradient.addColorStop(1, this.colorEnd);
-
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = this.color;
       ctx.fill();
     }
 
@@ -96,7 +91,7 @@
 
   const circles = [];
   for (let i = 0; i < 50; i++) {
-    const radius = Math.random() * 40 + 20; // Increase the max size and adjust min size
+    const radius = Math.random() * 20 + 10;
     const x = Math.random() * (canvas.width - radius * 2) + radius;
     const y = Math.random() * (canvas.height - radius * 2) + radius;
     const dx = (Math.random() - 0.5) * 2;
