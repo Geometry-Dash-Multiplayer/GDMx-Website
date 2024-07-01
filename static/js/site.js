@@ -90,10 +90,10 @@
   }
 
   const circles = [];
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 40; i++) {
     const radius = Math.random() * 20 + 10;
-    const x = Math.random() * (canvas.width - radius * 2) + radius;
-    const y = Math.random() * (canvas.height - radius * 2) + radius;
+    const x = Math.random() * (canvas.width - radius * 5) + radius;
+    const y = Math.random() * (canvas.height - radius * 5) + radius;
     const dx = (Math.random() - 0.5) * 2;
     const dy = (Math.random() - 0.5) * 2;
     circles.push(new Circle(x, y, dx, dy, radius));
