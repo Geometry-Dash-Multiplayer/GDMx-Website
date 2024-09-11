@@ -9,7 +9,7 @@ from models.utils import replace_emojis, patreon
 import re
 
 from github import Github
-
+template_folder = "templates"
 @app.route('/')
 def index():
     return render_template("index.html")
